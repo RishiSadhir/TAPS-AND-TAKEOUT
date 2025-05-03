@@ -1,11 +1,40 @@
-body {
-    background: #111;
-    color: limegreen;
-    font-family: monospace;
-    text-align: center;
+body, html {
+    margin: 0;
+    padding: 0;
+    background-color: #F7F4EB;
+    color: #902F15;
+    font-family: Arial, sans-serif;
 }
+
+.splash-screen {
+    text-align: center;
+    padding: 50px;
+}
+
+.logo {
+    width: 150px;
+    height: auto;
+}
+
+.site-title {
+    font-size: 3em;
+    margin: 20px 0 10px;
+    color: #902F15;
+}
+
+nav {
+    margin-top: 20px;
+}
+
 nav a {
-    color: hotpink;
     text-decoration: none;
-    margin: 10px
+    color: #902F15;
+    margin: 0 15px;
+    font-weight: bold;
+    border-bottom: 2px solid transparent;
+    padding-bottom: 5px;
+}
+
+nav a:hover {
+    border-color: #902F15;
 }
