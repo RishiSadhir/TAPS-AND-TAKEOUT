@@ -1,23 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Taps & Takeout</title>
-    <link href="https://fonts.googleapis.com/css2?family=Prata&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/static/style.css" />
-</head>
-<body>
-    <div class="splash-screen">
-        <a href="/">
-            <img src="/static/images/logo.png" alt="Taps & Takeout logo" class="logo" />
-        </a>
-        <p>If you know, you know.</p>
-        <nav>
-            <a href="/menu">Menu</a>
-            <a href="/events">Events</a>
-            <a href="/contact">Contact</a>
-        </nav>
-    </div>
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block title %}Taps & Takeout — Menu{% endblock %}
+
+{% block content %}
+<main class="page-content home">
+    <p>If you know, you know.</p>
+    <nav>
+        <a href="/menu">Menu</a>
+        <a href="/events">Events</a>
+        <a href="/contact">Contact</a>
+    </nav>
+</main>
+{% endblock %}
