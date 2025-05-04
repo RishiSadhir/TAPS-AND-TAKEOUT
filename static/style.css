@@ -20,6 +20,10 @@ body, html {
     padding: calc(var(--spacing) / 2) var(--spacing) var(--spacing);
   }
 
+ .page-content.home {
+    text-align: center;
+}
+
 .page-content section {
     margin-bottom: calc(var(--spacing) * 1.5);
 }
@@ -32,14 +36,6 @@ body, html {
 .page-content ul {
     margin: 0.5rem 0 1rem;
     padding-left: 1.25rem;
-}
-
-.page-content h2 {        /* section titles (“Drinks for All”) */
-    font-size: 1.5rem;
-    letter-spacing: 0.5px;
-    background: rgba(144,47,21,.1);
-    padding: 0.25rem var(--spacing);
-    border-radius: 4px;
 }
 
 .page-content h3 {        /* sub-titles (“Beer”, “Wine”) */
@@ -81,50 +77,32 @@ body, html {
     color: #902F15;
 }
 
-nav {
-    margin-top: 20px;
-    flex-wrap: wrap;
+dl {
+    margin: 0;
+}
+dt {
+    font-weight: bold;
+    margin-top: var(--spacing);
+}
+dd {
+    margin: 0 0 var(--spacing) 1rem;
 }
 
 nav a {
-    text-decoration: none;
-    color: #902F15;
-    margin: 0 15px;
+    text-decoration: none;       /* removes underline */
+    color: var(--fg);            /* sets it to your brand color */
+    margin: 0 1rem;              /* adds spacing between links */
     font-weight: bold;
+    font-size: 1.1rem;
     border-bottom: 2px solid transparent;
-    padding-bottom: 5px;
+    padding-bottom: 4px;
+    transition: color 0.2s, border-color 0.2s;
 }
-
+  
 nav a:hover {
-    border-color: #902F15;
+    border-color: var(--fg);     /* underline effect on hover */
 }
 
-footer {
-    margin-top: 3rem;
-    font-size: 0.9rem;
-    text-align: center;
-    opacity: 0.8;
-  }
-
-  dl {
-    margin: 0;
-  }
-  dt {
-    font-weight: bold;
-    margin-top: var(--spacing);
-  }
-  dd {
-    margin: 0 0 var(--spacing) 1rem;
-  }
-
-  .menu-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-  .menu-list li {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    padding: 0.5rem 0;
-    border-bottom: 1px solid rgba(144,47,21, .2);
-  }
+nav {
+    margin-top: 1.5rem;
+}
