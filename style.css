@@ -37,6 +37,9 @@ body, html {
 .page-content h2 {        /* section titles (“Drinks for All”) */
     font-size: 1.5rem;
     letter-spacing: 0.5px;
+    background: rgba(144,47,21,.1);
+    padding: 0.25rem var(--spacing);
+    border-radius: 4px;
 }
 
 .page-content h3 {        /* sub-titles (“Beer”, “Wine”) */
@@ -101,4 +104,27 @@ footer {
     font-size: 0.9rem;
     text-align: center;
     opacity: 0.8;
+  }
+
+  dl {
+    margin: 0;
+  }
+  dt {
+    font-weight: bold;
+    margin-top: var(--spacing);
+  }
+  dd {
+    margin: 0 0 var(--spacing) 1rem;
+  }
+
+  .menu-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .menu-list li {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(144,47,21, .2);
   }
