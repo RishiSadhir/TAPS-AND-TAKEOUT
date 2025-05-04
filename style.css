@@ -1,9 +1,61 @@
+:root {
+    --bg:   #F7F4EB;
+    --fg:   #902F15;
+    --logo-max-width: 350px;
+    --spacing: 1.5rem;
+    --font-heading: 'Prata', serif;
+  }
+  
 body, html {
     margin: 0;
     padding: 0;
-    background-color: #F7F4EB;
-    color: #902F15;
-    font-family: Arial, sans-serif;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-heading);
+}
+
+.page-content {
+    max-width: 600px;       /* or 700–800px, whatever feels right */
+    margin: 0 auto;         /* center on the page */
+    padding: var(--spacing);
+  }
+
+.page-content section {
+    margin-bottom: calc(var(--spacing) * 1.5);
+}
+
+.page-content h2 {
+    margin-top: calc(var(--spacing) * 1.33);
+    margin-bottom: calc(var(--spacing) * 0.33);
+}
+
+.page-content ul {
+    margin: 0.5rem 0 1rem;
+    padding-left: 1.25rem;
+}
+
+.page-content h2 {        /* section titles (“Drinks for All”) */
+    font-size: 1.5rem;
+    letter-spacing: 0.5px;
+    background: rgba(144,47,21,.1);
+    padding: 0.25rem var(--spacing);
+    border-radius: 4px;
+}
+
+.page-content h3 {        /* sub-titles (“Beer”, “Wine”) */
+    font-size: 1.25rem;
+    font-weight: normal;
+    margin-top: var(--spacing);
+}
+
+.page-content li {
+    font-size: 1rem;
+    line-height: 1.4;
+}
+
+.page-content section + section {
+    border-top: 1px solid rgba(144,47,21, 0.2);
+    padding-top: var(--spacing);
 }
 
 .splash-screen {
@@ -11,8 +63,15 @@ body, html {
     padding: 50px;
 }
 
+.page-content .specials {
+    background-color: rgba(144,47,21, 0.05);
+    padding: 1rem;
+    border-radius: 4px;
+}
+
 .logo {
-    width: 500px;
+    max-width: var(--logo-max-width);
+    width: 80%;
     height: auto;
 }
 
@@ -24,6 +83,7 @@ body, html {
 
 nav {
     margin-top: 20px;
+    flex-wrap: wrap;
 }
 
 nav a {
@@ -38,3 +98,33 @@ nav a {
 nav a:hover {
     border-color: #902F15;
 }
+
+footer {
+    margin-top: 3rem;
+    font-size: 0.9rem;
+    text-align: center;
+    opacity: 0.8;
+  }
+
+  dl {
+    margin: 0;
+  }
+  dt {
+    font-weight: bold;
+    margin-top: var(--spacing);
+  }
+  dd {
+    margin: 0 0 var(--spacing) 1rem;
+  }
+
+  .menu-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .menu-list li {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(144,47,21, .2);
+  }
