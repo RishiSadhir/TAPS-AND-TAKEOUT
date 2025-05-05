@@ -6,11 +6,18 @@
 
   <main class="page-content">
     <h1 class="page-title">Events Calendar</h1>
+    {% if events %}
     <ul>
-      <li>May 10: Open Mic Night</li>
-      <li>May 17: Trivia Tuesday</li>
-      <li>May 24: Live Jazz</li>
+      {% for event in events|sort(attribute='date') if event.date >= current_date %}
+        <li>
+          <strong>{{ event.title }}</strong> ({{ event.date.strftime("%b %e, %Y") }})
+          {% if event.description %}: {{ event.description }}{% endif %}
+        </li>
+      {% endfor %}
     </ul>
+    {% else %}
+      <p>I don't know man, just ask your server.</p>
+    {% endif %}
   </main>
 
 {% endblock %}
