@@ -15,7 +15,7 @@ body, html {
 }
 
 .page-content {
-    max-width: 600px;       /* or 700–800px, whatever feels right */
+    max-width: 700px;
     margin: 0 auto;         /* center on the page */
     padding: calc(var(--spacing) / 2) var(--spacing) var(--spacing);
   }
@@ -98,7 +98,7 @@ nav a {
     padding-bottom: 4px;
     transition: color 0.2s, border-color 0.2s;
 }
-  
+
 nav a:hover {
     border-color: var(--fg);     /* underline effect on hover */
 }
