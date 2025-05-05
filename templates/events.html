@@ -8,7 +8,7 @@
     <h1 class="page-title">Events Calendar</h1>
     {% if events %}
     <ul>
-      {% for event in events|sort(attribute='date') if event.date >= current_date %}
+      {% for event in events|sort(attribute='date') if event.date >= current_date-1 %}
         <li>
           <strong>{{ event.title }}</strong> ({{ event.date.strftime("%b %e, %Y") }})
           {% if event.description %}: {{ event.description }}{% endif %}
