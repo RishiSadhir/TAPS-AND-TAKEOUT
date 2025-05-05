@@ -1,9 +1,13 @@
-from flask import Flask, render_template, request, redirect, url_for, render_template_string
+import os
+from datetime import datetime, date
 from events import load_events, save_events
 
-app = Flask(__name__)
+from flask import Flask, render_template, request, redirect, url_for, session 
+from dotenv import load_dotenv
+load_dotenv()
 
-SECRET_KEY = "secret123"  # You can change this to anything
+app = Flask(__name__)
+app.secret_key = os.getenv("FLASK_SECRET_KEY", "devfallback")
 
 
 @app.route('/')
@@ -19,18 +23,50 @@ def menu():
 @app.route('/events')
 def events():
     events_list = load_events()
-    return render_template('events.html', events=events_list)
+    return render_template('events.html', events=events_list,
+                           current_date=date.today())
+
+
+@app.route('/contact')
+def contact():
+    return render_template('contact.html')
+
+
+@app.route('/admin', methods=['GET', 'POST'])
+def admin_login():
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        if username == 'admin' and password == os.getenv("ADMIN_PASSWORD", "admin"):
+            session['admin'] = True
+            return redirect(url_for('admin_events'))
+        return "Invalid credentials", 403
+    return render_template('admin_login.html')
+
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('admin'))
 
 
 @app.route("/admin-events", methods=["GET", "POST"])
 def admin_events():
-    if request.args.get("key") != SECRET_KEY:
-        return "Unauthorized", 403
+    if not session.get('admin'):
+        return redirect(url_for('admin'))
 
     events = load_events()
 
     if request.method == "POST":
-        action = request.form.get("action") # Either 'add', 'update', or, 'delete'
+        # Inside your "add" or "update" logic:
+        date_str = request.form["date"]
+        try:
+            # Validates YYYY-MM-DD
+            datetime.strptime(date_str, "%Y-%m-%d")
+        except ValueError:
+            return "Invalid date format", 400
+        # Either 'add', 'update', or, 'delete'
+        action = request.form.get("action")
         index = request.form.get("index")
 
         if action == "add":
@@ -54,16 +90,12 @@ def admin_events():
             elif action == "delete":
                 # Delete the event at the given index
                 events.pop(index)
+
         save_events(events)
-        return redirect(url_for("admin_events", key=SECRET_KEY))
+        return redirect(url_for("admin_events"))
 
     else:
         return render_template("admin_events.html", events=events)
-
-
-@app.route('/contact')
-def contact():
-    return render_template('contact.html')
 
 
 if __name__ == '__main__':

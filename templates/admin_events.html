@@ -3,12 +3,15 @@
 {% block content %}
   <main class="page-content">
     <h1 class="page-title">Admin Events</h1>
+    <p style="text-align: left;">
+      <a href="{{ url_for('logout') }}" class="button" style="display: inline-block;">Logout</a>
+    </p>
 
     <!-- Add New Event -->
     <form method="post">
       <input type="hidden" name="action" value="add">
       <input name="title" placeholder="Event Title" required><br>
-      <input name="date" placeholder="Date" required><br>
+      <input type="date" name="date" required><br>
       <textarea name="description" placeholder="Description"></textarea><br>
       <button type="submit">Add Event</button>
     </form>
@@ -20,7 +23,7 @@
       <form method="post" style="margin-bottom: 1rem;">
         <input type="hidden" name="index" value="{{ loop.index0 }}">
         <input name="title" value="{{ event.title }}">
-        <input name="date" value="{{ event.date }}">
+        <input type="date" name="date" value="{{ event.date }}">
         <textarea name="description">{{ event.description }}</textarea>
         <button type="submit" name="action" value="update">Update</button>
         <button type="submit" name="action" value="delete">Delete</button>
