@@ -1,5 +1,5 @@
 import os
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 from events import load_events, save_events
 
 from flask import Flask, render_template, request, redirect, url_for, session 
@@ -23,8 +23,10 @@ def menu():
 @app.route('/events')
 def events():
     events_list = load_events()
+    today = date.today()
+    yesterday = today - timedelta(days=1)
     return render_template('events.html', events=events_list,
-                           current_date=date.today())
+                           current_date=today, yesterday=yesterday)
 
 
 @app.route('/contact')
