@@ -6,8 +6,10 @@ EVENTS_FILE = os.path.join("data", "events.json")
 
 
 def load_events():
+    # 1. Empty JSON if the db file doesn't exist
     if not os.path.exists(EVENTS_FILE):
         return []
+    # 2. Read the JSON file
     with open(EVENTS_FILE, "r") as f:
         events = json.load(f)
         # Convert string dates to datetime.date
