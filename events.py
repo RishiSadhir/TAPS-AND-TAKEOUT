@@ -18,12 +18,19 @@ def load_events():
 
 
 def save_events(events):
-    # Prepare events for JSON serialization: convert date objects to ISO format strings
+    # 1. Make sure parent directory exists
+    directory = os.path.dirname(EVENTS_FILE)
+    if directory and not os.path.exists(directory):
+        os.makedirs(directory, exist_ok=True)
+
+    # 2. Convert date objects back to ISO strings
     serializable_events = []
     for event in events:
         ev = event.copy()
         if isinstance(ev.get("date"), date):
             ev["date"] = ev["date"].isoformat()
         serializable_events.append(ev)
+
+    # 3. Write the JSON file
     with open(EVENTS_FILE, "w") as f:
         json.dump(serializable_events, f, indent=2)
