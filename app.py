@@ -28,34 +28,37 @@ def admin_events():
         return "Unauthorized", 403
 
     events = load_events()
+
     if request.method == "POST":
-        title = request.form["title"]
-        date = request.form["date"]
-        description = request.form["description"]
-        events.append({
-            "title": title,
-            "date": date,
-            "description": description
-        })
+        action = request.form.get("action") # Either 'add', 'update', or, 'delete'
+        index = request.form.get("index")
+
+        if action == "add":
+            # Add a new event from form data
+            new_event = {
+                "title": request.form["title"],
+                "date": request.form["date"],
+                "description": request.form["description"]
+            }
+            events.append(new_event)
+
+        elif action in ["update", "delete"] and index is not None:
+            index = int(index)
+            if action == "update":
+                events[index] = {
+                    "title": request.form["title"],
+                    "date": request.form["date"],
+                    "description": request.form["description"]
+                }
+
+            elif action == "delete":
+                # Delete the event at the given index
+                events.pop(index)
         save_events(events)
         return redirect(url_for("admin_events", key=SECRET_KEY))
 
-    return render_template_string("""
-        <h1>Admin Events</h1>
-        <form method="post">
-            <input name="title" placeholder="Event Title" required><br>
-            <input name="date" placeholder="Date" required><br>
-            <textarea name="description" placeholder="Description"></textarea><br>
-            <button type="submit">Add Event</button>
-        </form>
-        <hr>
-        <h2>Current Events</h2>
-        <ul>
-        {% for event in events %}
-            <li><strong>{{ event.title }}</strong> ({{ event.date }}): {{ event.description }}</li>
-        {% endfor %}
-        </ul>
-    """, events=events)
+    else:
+        return render_template("admin_events.html", events=events)
 
 
 @app.route('/contact')
