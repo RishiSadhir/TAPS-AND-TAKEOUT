@@ -18,9 +18,9 @@ body, html {
     max-width: 700px;
     margin: 0 auto;         /* center on the page */
     padding: calc(var(--spacing) / 2) var(--spacing) var(--spacing);
-  }
-
- .page-content.home {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     text-align: center;
 }
 
@@ -104,5 +104,54 @@ nav a:hover {
 }
 
 nav {
+    display: flex;
+    justify-content: center;
     margin-top: 1.5rem;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+
+.page-title {
+    font-size: 2.25rem;
+    margin-top: var(--spacing);
+    margin-bottom: calc(var(--spacing) * 0.66);
+    text-align: center;
+}
+
+section,
+.page-content > ul,
+.page-content > p {
+    margin-bottom: var(--spacing);
+}
+
+.left-align {
+    align-items: stretch;
+    text-align: left;
+}
+
+/* Events page specific styles */
+.events-page ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.events-page li {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid rgba(144,47,21, 0.2);
+}
+.events-page li:last-child {
+    border-bottom: none;
+}
+.events-page strong {
+    font-size: 1.25rem;
+}
+.events-page time {
+    display: block;
+    margin: 0.25rem 0;
+    color: rgba(0,0,0,0.7);
+}
+.events-page .event-description {
+    color: rgba(0,0,0,0.6);
+    margin-top: 0.25rem;
 }
