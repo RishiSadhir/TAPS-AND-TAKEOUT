@@ -1,36 +1,30 @@
-{% extends "base.html" %}
+{% extends "admin_base.html" %}
 
-{% block content %}
-  <main class="page-content">
-    <h1 class="page-title">Admin Events</h1>
-    <p style="text-align: left;">
-      <a href="{{ url_for('admin_menu') }}" class="button" style="display: inline-block;">Menu</a>
-      <a href="{{ url_for('logout') }}" class="button" style="display: inline-block;">Logout</a>
-    </p>
+{% block admin_content %}
+  <h1 class="page-title">Events</h1>
 
-    <!-- Add New Event -->
-    <form method="post">
+  <!-- Add New Event -->
+  <form method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <input type="hidden" name="action" value="add">
+    <input name="title" placeholder="Event Title" required><br>
+    <input type="date" name="date" required><br>
+    <textarea name="description" placeholder="Description"></textarea><br>
+    <button type="submit">Add Event</button>
+  </form>
+
+  <hr>
+
+  <h2>Current Events</h2>
+  {% for event in events %}
+    <form method="post" style="margin-bottom: 1rem;">
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-      <input type="hidden" name="action" value="add">
-      <input name="title" placeholder="Event Title" required><br>
-      <input type="date" name="date" required><br>
-      <textarea name="description" placeholder="Description"></textarea><br>
-      <button type="submit">Add Event</button>
+      <input type="hidden" name="index" value="{{ loop.index0 }}">
+      <input name="title" value="{{ event.title }}">
+      <input type="date" name="date" value="{{ event.date }}">
+      <textarea name="description">{{ event.description }}</textarea>
+      <button type="submit" name="action" value="update">Update</button>
+      <button type="submit" name="action" value="delete" onclick="return confirm('Delete this event?')">Delete</button>
     </form>
-
-    <hr>
-
-    <h2>Current Events</h2>
-    {% for event in events %}
-      <form method="post" style="margin-bottom: 1rem;">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-        <input type="hidden" name="index" value="{{ loop.index0 }}">
-        <input name="title" value="{{ event.title }}">
-        <input type="date" name="date" value="{{ event.date }}">
-        <textarea name="description">{{ event.description }}</textarea>
-        <button type="submit" name="action" value="update">Update</button>
-        <button type="submit" name="action" value="delete" onclick="return confirm('Delete this event?')">Delete</button>
-      </form>
-    {% endfor %}
-  </main>
+  {% endfor %}
 {% endblock %}

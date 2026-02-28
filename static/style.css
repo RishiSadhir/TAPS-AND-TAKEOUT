@@ -293,3 +293,38 @@ button:hover, input[type="submit"]:hover {
 a {
   color: var(--amber);
 }
+
+/* ── Admin nav bar ── */
+.admin-nav {
+  display: flex;
+  gap: 1.5rem;
+  width: 100%;
+  border-bottom: 1px solid var(--amber-dim);
+  padding-bottom: 0.75rem;
+  margin-bottom: 1.5rem;
+  align-items: baseline;
+}
+
+.admin-nav a {
+  text-decoration: none;
+  color: var(--amber-muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  border-bottom: 1px solid transparent;
+  padding-bottom: 2px;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.admin-nav a:hover {
+  color: var(--amber);
+}
+
+.admin-nav a.active {
+  color: var(--amber);
+  border-bottom-color: var(--amber);
+}
+
+.admin-nav-logout {
+  margin-left: auto;
+}
