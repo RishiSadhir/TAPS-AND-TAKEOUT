@@ -45,8 +45,9 @@ def menu():
 def events():
     events_list = load_events()
     yesterday = date.today() - timedelta(days=1)
-    upcoming = sorted([e for e in events_list if e['date'] >= yesterday], key=lambda e: e['date'])
-    return render_template('events.html', events=upcoming)
+    pinned = [e for e in events_list if e.get('pinned')]
+    upcoming = sorted([e for e in events_list if not e.get('pinned') and e['date'] >= yesterday], key=lambda e: e['date'])
+    return render_template('events.html', pinned=pinned, events=upcoming)
 
 
 @app.route('/contact')
@@ -87,12 +88,15 @@ def admin_events():
         action = request.form.get("action")
         index = request.form.get("index")
 
+        pinned = bool(request.form.get("pinned"))
+
         if action in ("add", "update"):
             date_str = request.form.get("date", "")
-            try:
-                datetime.strptime(date_str, "%Y-%m-%d")
-            except ValueError:
-                return "Invalid date format", 400
+            if not pinned:
+                try:
+                    datetime.strptime(date_str, "%Y-%m-%d")
+                except ValueError:
+                    return "Invalid date format", 400
 
         if action == "add":
             title = request.form.get("title", "").strip()
@@ -100,8 +104,9 @@ def admin_events():
                 return "Title is required", 400
             new_event = {
                 "title": title,
-                "date": request.form["date"],
+                "date": request.form.get("date") or date.today().isoformat(),
                 "description": request.form.get("description", "").strip(),
+                "pinned": pinned,
             }
             events.append(new_event)
             log.info("Admin: added event '%s' on %s", new_event["title"], new_event["date"])
@@ -118,8 +123,9 @@ def admin_events():
                 old_title = events[idx]["title"]
                 events[idx] = {
                     "title": title,
-                    "date": request.form["date"],
+                    "date": request.form.get("date") or date.today().isoformat(),
                     "description": request.form.get("description", "").strip(),
+                    "pinned": pinned,
                 }
                 log.info("Admin: updated event '%s' → '%s'", old_title, title)
 

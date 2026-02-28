@@ -8,8 +8,9 @@
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
     <input type="hidden" name="action" value="add">
     <input name="title" placeholder="Event Title" required><br>
-    <input type="date" name="date" required><br>
+    <input type="date" name="date"><br>
     <textarea name="description" placeholder="Description"></textarea><br>
+    <label><input type="checkbox" name="pinned" value="1"> Recurring (won't expire)</label><br>
     <button type="submit">Add Event</button>
   </form>
 
@@ -21,8 +22,9 @@
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
       <input type="hidden" name="index" value="{{ loop.index0 }}">
       <input name="title" value="{{ event.title }}">
-      <input type="date" name="date" value="{{ event.date }}">
-      <textarea name="description">{{ event.description }}</textarea>
+      <input type="date" name="date" value="{{ event.date if not event.get('pinned') else '' }}"><br>
+      <textarea name="description">{{ event.description }}</textarea><br>
+      <label><input type="checkbox" name="pinned" value="1" {% if event.get('pinned') %}checked{% endif %}> Recurring (won't expire)</label><br>
       <button type="submit" name="action" value="update">Update</button>
       <button type="submit" name="action" value="delete" onclick="return confirm('Delete this event?')">Delete</button>
     </form>

@@ -6,8 +6,17 @@
 
   <main class="page-content left-align events-page">
     <h1 class="page-title">Events Calendar</h1>
-    {% if events %}
+    {% if pinned or events %}
     <ul>
+      {% for event in pinned %}
+        <li>
+          <strong>{{ event.title }}</strong>
+          <time>Recurring</time>
+          {% if event.description %}
+            <span class="event-description">{{ event.description }}</span>
+          {% endif %}
+        </li>
+      {% endfor %}
       {% for event in events %}
         <li>
           <strong>{{ event.title }}</strong>

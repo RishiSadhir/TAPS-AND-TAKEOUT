@@ -254,6 +254,53 @@ def test_delete_event_out_of_bounds(client):
 
 
 # ---------------------------------------------------------------------------
+# Pinned event tests
+# ---------------------------------------------------------------------------
+
+def test_pinned_event_always_shows(client):
+    events_module.save_events([
+        {"title": "Pinned", "date": date(2000, 1, 1), "description": "", "pinned": True},
+    ])
+    html = client.get("/events").data.decode()
+    assert "Pinned" in html
+    assert "Recurring" in html
+
+
+def test_pinned_event_not_shown_as_dated(client):
+    events_module.save_events([
+        {"title": "Pinned", "date": date(2000, 1, 1), "description": "", "pinned": True},
+    ])
+    html = client.get("/events").data.decode()
+    assert "2000" not in html
+
+
+def test_pinned_event_shown_before_upcoming(client):
+    events_module.save_events([
+        {"title": "Upcoming", "date": date.today() + timedelta(days=1), "description": "", "pinned": False},
+        {"title": "Pinned", "date": date(2000, 1, 1), "description": "", "pinned": True},
+    ])
+    html = client.get("/events").data.decode()
+    assert html.index("Pinned") < html.index("Upcoming")
+
+
+def test_add_pinned_event_no_date(client):
+    login(client)
+    r = client.post("/admin-events", data={
+        "action": "add", "title": "Jazz Night", "date": "", "description": "Every Saturday", "pinned": "1",
+    }, follow_redirects=True)
+    assert r.status_code == 200
+    assert "Jazz Night" in r.data.decode()
+
+
+def test_unpinned_event_still_requires_date(client):
+    login(client)
+    r = client.post("/admin-events", data={
+        "action": "add", "title": "One-off", "date": "", "description": "",
+    })
+    assert r.status_code == 400
+
+
+# ---------------------------------------------------------------------------
 # Admin menu CRUD tests
 # ---------------------------------------------------------------------------
 
