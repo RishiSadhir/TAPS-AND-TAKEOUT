@@ -32,18 +32,21 @@ FLASK_SECRET_KEY=...
 ADMIN_PASSWORD=...
 ```
 
-Both fall back to insecure defaults (`devfallback` / `admin`) if not set.
+Both fall back to insecure defaults (`devfallback` / `admin`) if not set. Note: `ADMIN_PASSWORD` has no fallback in production — if unset, `os.getenv` returns `None` and login will always fail.
 
 ## Architecture
 
-- **`app.py`** — Flask routes: `/`, `/menu`, `/events`, `/contact`, `/admin` (login), `/admin-events` (CRUD)
+- **`app.py`** — Flask routes: `/`, `/menu`, `/events`, `/contact`, `/admin` (login), `/admin-events` (events CRUD), `/admin-menu` (menu CRUD)
 - **`events.py`** — `load_events()` / `save_events()`: reads/writes `data/events.json`, converting between `datetime.date` objects and ISO strings
-- **`data/events.json`** — flat JSON array of `{title, date, description}` objects; this is the database
-- **`templates/`** — Jinja2 templates extending `base.html`; all pages share the logo header
+- **`menu_data.py`** — `load_menu()` / `save_menu()`: reads/writes `data/menu.json`; falls back to built-in default seed if file missing
+- **`data/events.json`** — flat JSON array of `{title, date, description}` objects; this is the events database
+- **`data/menu.json`** — JSON array of `{section, items: [{name, description}]}` objects; this is the menu database
+- **`templates/`** — Jinja2 templates; admin pages extend `admin_base.html` which extends `base.html`
 - **`static/`** — single `style.css` + `images/` directory
+- **`tests.py`** — pytest suite; run with `pytest tests.py -v`
 
 ## Key Behaviors
 
-- Events page filters out events older than yesterday (`event.date >= yesterday`) and sorts by date — both handled in the Jinja2 template
-- Admin is session-based; login at `/admin`, manage events at `/admin-events`
-- No actual database — events are stored as JSON on disk, which means they reset on Render deploys unless a persistent disk is configured
+- Events page filters out events older than yesterday (`event.date >= yesterday`) and sorts by date — both done in Python in the `/events` route, not in the template
+- Admin is session-based (8-hour timeout); login at `/admin`, manage events at `/admin-events`, manage menu at `/admin-menu`; login is rate-limited to 10 attempts/minute
+- No actual database — data is stored as JSON on disk, which means it resets on Render deploys unless a persistent disk is configured
