@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <main class="page-content">
+    <h1 class="page-title">Admin Menu</h1>
+    <p style="text-align: left;">
+      <a href="{{ url_for('admin_events') }}" class="button" style="display: inline-block;">Events</a>
+      <a href="{{ url_for('logout') }}" class="button" style="display: inline-block;">Logout</a>
+    </p>
+
+    <!-- Add New Section -->
+    <form method="post">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <input type="hidden" name="action" value="add_section">
+      <input name="section_name" placeholder="New Section Name" required>
+      <button type="submit">Add Section</button>
+    </form>
+
+    <hr>
+
+    {% for section in menu %}
+      {% set si = loop.index0 %}
+      <h2>{{ section.section }}</h2>
+      <form method="post" style="display: inline;">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <input type="hidden" name="action" value="delete_section">
+        <input type="hidden" name="section_index" value="{{ si }}">
+        <button type="submit" onclick="return confirm('Delete section &quot;{{ section.section }}&quot; and all its items?')">Delete Section</button>
+      </form>
+
+      {% for item in section['items'] %}
+        <form method="post" style="margin: 0.75rem 0;">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <input type="hidden" name="section_index" value="{{ si }}">
+          <input type="hidden" name="item_index" value="{{ loop.index0 }}">
+          <input name="item_name" value="{{ item.name }}" required><br>
+          <textarea name="item_description">{{ item.description }}</textarea><br>
+          <button type="submit" name="action" value="update_item">Update</button>
+          <button type="submit" name="action" value="delete_item" onclick="return confirm('Delete &quot;{{ item.name }}&quot;?')">Delete</button>
+        </form>
+      {% endfor %}
+
+      <!-- Add Item to This Section -->
+      <form method="post" style="margin-top: 0.5rem;">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <input type="hidden" name="action" value="add_item">
+        <input type="hidden" name="section_index" value="{{ si }}">
+        <input name="item_name" placeholder="Item Name" required><br>
+        <textarea name="item_description" placeholder="Description"></textarea><br>
+        <button type="submit">Add Item</button>
+      </form>
+
+      <hr>
+    {% endfor %}
+  </main>
+{% endblock %}

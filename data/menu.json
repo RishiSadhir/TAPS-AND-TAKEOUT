@@ -1,0 +1,40 @@
+[
+  {
+    "section": "Daily Specials",
+    "items": [
+      {
+        "name": "Taco Tuesday",
+        "description": "Tacos \u2014 $3 | Burrito \u2014 $12 | Burrito Bowl \u2014 $14\nChicken, Steak, Fish, Pork, Pastor, Veggie\nFor Shrimp or Tongue add $1"
+      },
+      {
+        "name": "WTF Wednesday",
+        "description": "WHO THE F#$% Knows? Ask your server."
+      },
+      {
+        "name": "Thirsty Thursday",
+        "description": "Texas Burger & 16oz Draft Beer \u2014 $19.99\n12oz Cider \u2014 $3"
+      },
+      {
+        "name": "Fried Chicken Friday",
+        "description": "(Includes sides) 4pc \u2014 $19 | 8pc \u2014 $29"
+      },
+      {
+        "name": "Smoked Saturday",
+        "description": "Ribs, Salmon, Pork, or Brisket Plate with 1 side \u2014 $19\nSandwich with fries \u2014 $16"
+      }
+    ]
+  },
+  {
+    "section": "Drinks",
+    "items": [
+      {
+        "name": "Beer",
+        "description": "We have several rotating taps of micro, macro, nano, regional breweries and everything in between. Plus numerous varieties of 12\u201319oz canned beer, agua fresca, hard kombucha, cider and cocktails."
+      },
+      {
+        "name": "Wine",
+        "description": "Wine available by glass or bottle. Beer and wine also offered to go."
+      }
+    ]
+  }
+]

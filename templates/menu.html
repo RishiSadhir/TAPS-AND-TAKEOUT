@@ -5,30 +5,15 @@
 {% block content %}
   <main class="page-content">
 
+    {% for section in menu %}
     <section>
-      <h2>Daily Specials</h2>
-      <h3>Taco Tuesday</h3>
-      <p>Tacos — $3 | Burrito — $12 | Burrito Bowl — $14<br>
-      Chicken, Steak, Fish, Pork, Pastor, Veggie<br>
-      For Shrimp or Tongue add $1</p>
-      <h3>WTF Wednesday</h3>
-      <p>WHO THE F#$% Knows? Ask your server.</p>
-      <h3>Thirsty Thursday</h3>
-      <p>Texas Burger & 16oz Draft Beer — $19.99<br>12oz Cider — $3</p>
-      <h3>Fried Chicken Friday</h3>
-      <p>(Includes sides) 4pc — $19 | 8pc — $29</p>
-      <h3>Smoked Saturday</h3>
-      <p>Ribs, Salmon, Pork, or Brisket Plate with 1 side — $19<br>
-      Sandwich with fries — $16</p>
+      <h2>{{ section.section }}</h2>
+      {% for item in section['items'] %}
+        <h3>{{ item.name }}</h3>
+        <p style="white-space: pre-line">{{ item.description }}</p>
+      {% endfor %}
     </section>
+    {% endfor %}
 
-    <section>
-      <h2>Drinks</h2>
-      <h3>Beer</h3>
-      <p>We have several rotating taps of micro, macro, nano, regional breweries and everything in between. Plus numerous varieties of 12–19oz canned beer, agua fresca, hard kombucha, cider and cocktails.</p>
-      <h3>Wine</h3>
-      <p>Wine available by glass or bottle. Beer and wine also offered to go.</p>
-    </section>
-    
   </main>
 {% endblock %}
