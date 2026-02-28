@@ -300,6 +300,20 @@ def test_unpinned_event_still_requires_date(client):
     assert r.status_code == 400
 
 
+def test_clear_past_events(client):
+    events_module.save_events([
+        {"title": "Old Gig", "date": date.today() - timedelta(days=5), "description": "", "pinned": False},
+        {"title": "Upcoming Gig", "date": date.today() + timedelta(days=5), "description": "", "pinned": False},
+        {"title": "Weekly Jazz", "date": date(2000, 1, 1), "description": "", "pinned": True},
+    ])
+    login(client)
+    r = client.post("/admin-events", data={"action": "clear_past"}, follow_redirects=True)
+    html = r.data.decode()
+    assert "Old Gig" not in html
+    assert "Upcoming Gig" in html
+    assert "Weekly Jazz" in html
+
+
 # ---------------------------------------------------------------------------
 # Admin menu CRUD tests
 # ---------------------------------------------------------------------------

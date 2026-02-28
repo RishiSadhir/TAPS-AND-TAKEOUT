@@ -17,6 +17,11 @@
   <hr>
 
   <h2>Current Events</h2>
+  <form method="post" style="margin-bottom: 1rem;">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <input type="hidden" name="action" value="clear_past">
+    <button type="submit" onclick="return confirm('Remove all past events?')">Clear Past Events</button>
+  </form>
   {% for event in events %}
     <form method="post" style="margin-bottom: 1rem;">
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">

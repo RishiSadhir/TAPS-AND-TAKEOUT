@@ -133,6 +133,12 @@ def admin_events():
                 log.info("Admin: deleted event '%s'", events[idx]["title"])
                 events.pop(idx)
 
+        elif action == "clear_past":
+            yesterday = date.today() - timedelta(days=1)
+            before = len(events)
+            events = [e for e in events if e.get('pinned') or e['date'] >= yesterday]
+            log.info("Admin: cleared %d past event(s)", before - len(events))
+
         save_events(events)
         return redirect(url_for("admin_events"))
 
