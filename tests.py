@@ -4,6 +4,7 @@ import pytest
 from datetime import date, timedelta
 
 os.environ.setdefault("ADMIN_PASSWORD", "testpass")
+os.environ.setdefault("FLASK_SECRET_KEY", "test-secret-key")
 
 import app as flask_app
 import events as events_module
@@ -234,6 +235,15 @@ def test_update_event_out_of_bounds(client):
     assert r.status_code == 400
 
 
+def test_update_event_non_numeric_index(client):
+    login(client)
+    r = client.post("/admin-events", data={
+        "action": "update", "index": "abc",
+        "title": "X", "date": "2026-06-01", "description": "",
+    })
+    assert r.status_code == 400
+
+
 def test_delete_event(client):
     events_module.save_events([{"title": "Gone", "date": date(2026, 6, 1), "description": ""}])
     login(client)
@@ -343,6 +353,14 @@ def test_delete_section_out_of_bounds(client):
     assert r.status_code == 400
 
 
+def test_delete_section_non_numeric_index(client):
+    login(client)
+    r = client.post("/admin-menu", data={
+        "action": "delete_section", "section_index": "abc",
+    })
+    assert r.status_code == 400
+
+
 def test_add_item(client):
     menu_module.save_menu([{"section": "Drinks", "items": []}])
     login(client)
@@ -380,6 +398,16 @@ def test_update_item_out_of_bounds(client):
     login(client)
     r = client.post("/admin-menu", data={
         "action": "update_item", "section_index": "0", "item_index": "999",
+        "item_name": "X", "item_description": "",
+    })
+    assert r.status_code == 400
+
+
+def test_update_item_non_numeric_index(client):
+    menu_module.save_menu([{"section": "S", "items": [{"name": "Old", "description": ""}]}])
+    login(client)
+    r = client.post("/admin-menu", data={
+        "action": "update_item", "section_index": "0", "item_index": "abc",
         "item_name": "X", "item_description": "",
     })
     assert r.status_code == 400

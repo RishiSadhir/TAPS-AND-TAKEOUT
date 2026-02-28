@@ -17,8 +17,23 @@ logging.basicConfig(
 )
 log = logging.getLogger(__name__)
 
+
+def require_env(name):
+    value = os.getenv(name)
+    if not value:
+        raise RuntimeError(f"Missing required environment variable: {name}")
+    return value
+
+
+def parse_int_field(value, label):
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        raise ValueError(f"Invalid {label}")
+
+
 app = Flask(__name__)
-app.secret_key = os.getenv("FLASK_SECRET_KEY", "devfallback")
+app.secret_key = require_env("FLASK_SECRET_KEY")
 app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(hours=8)
 csrf = CSRFProtect(app)
 
@@ -61,7 +76,7 @@ def admin_login():
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
-        if username == 'admin' and password == os.getenv("ADMIN_PASSWORD"):
+        if username == 'admin' and password == require_env("ADMIN_PASSWORD"):
             session.permanent = True
             session['admin'] = True
             log.info("Admin login from %s", request.remote_addr)
@@ -112,7 +127,10 @@ def admin_events():
             log.info("Admin: added event '%s' on %s", new_event["title"], new_event["date"])
 
         elif action in ("update", "delete") and index is not None:
-            idx = int(index)
+            try:
+                idx = parse_int_field(index, "index")
+            except ValueError as exc:
+                return str(exc), 400
             if idx < 0 or idx >= len(events):
                 return "Invalid index", 400
 
@@ -163,14 +181,20 @@ def admin_menu():
                 log.info("Admin: added menu section '%s'", section_name)
 
         elif action == "delete_section" and section_index is not None:
-            si = int(section_index)
+            try:
+                si = parse_int_field(section_index, "section index")
+            except ValueError as exc:
+                return str(exc), 400
             if si < 0 or si >= len(menu):
                 return "Invalid section index", 400
             log.info("Admin: deleted menu section '%s'", menu[si]["section"])
             menu.pop(si)
 
         elif action == "add_item" and section_index is not None:
-            si = int(section_index)
+            try:
+                si = parse_int_field(section_index, "section index")
+            except ValueError as exc:
+                return str(exc), 400
             if si < 0 or si >= len(menu):
                 return "Invalid section index", 400
             item_name = request.form.get("item_name", "").strip()
@@ -181,12 +205,18 @@ def admin_menu():
             log.info("Admin: added item '%s' to section '%s'", item_name, menu[si]["section"])
 
         elif action in ("update_item", "delete_item") and section_index is not None:
-            si = int(section_index)
+            try:
+                si = parse_int_field(section_index, "section index")
+            except ValueError as exc:
+                return str(exc), 400
             if si < 0 or si >= len(menu):
                 return "Invalid section index", 400
             item_index = request.form.get("item_index")
             if item_index is not None:
-                ii = int(item_index)
+                try:
+                    ii = parse_int_field(item_index, "item index")
+                except ValueError as exc:
+                    return str(exc), 400
                 if ii < 0 or ii >= len(menu[si]["items"]):
                     return "Invalid item index", 400
                 if action == "update_item":
@@ -210,4 +240,5 @@ def admin_menu():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    port = int(os.getenv("PORT", "5001"))
+    app.run(host='0.0.0.0', port=port)

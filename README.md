@@ -20,7 +20,7 @@ A minimal Flask website for a neighborhood pub. Intentionally simple and borderl
 app.py              # Flask routes and request handling
 events.py           # load_events() / save_events() — reads/writes data/events.json
 menu_data.py        # load_menu() / save_menu() — reads/writes data/menu.json
-tests.py            # pytest suite (36 tests)
+tests.py            # pytest suite (45 tests)
 
 data/
   menu.json         # Menu sections and items (committed; seeded from original hardcoded menu)
@@ -51,6 +51,10 @@ pip install -r requirements.txt
 # FLASK_SECRET_KEY=...
 # ADMIN_PASSWORD=...
 
+# Both are required. The app will fail fast at startup if either is missing.
+
+python app.py           # respects PORT, defaults to 5001 locally
+# or
 flask run --port 5001   # port 5000 blocked by macOS AirPlay
 ```
 
@@ -62,4 +66,4 @@ pytest tests.py -v
 
 ## Deployment
 
-Hosted on Render (free tier, auto-deploys from `main`). Data resets on redeploy — events are expected to be re-entered, menu is seeded from `data/menu.json` in the repo.
+Hosted on Render (free tier, auto-deploys from `main`). Set both `FLASK_SECRET_KEY` and `ADMIN_PASSWORD` in the Render environment before deploy. The app also respects Render's `PORT` environment variable at runtime. Data resets on redeploy — events are expected to be re-entered, menu is seeded from `data/menu.json` in the repo.
