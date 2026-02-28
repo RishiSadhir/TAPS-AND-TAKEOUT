@@ -43,7 +43,7 @@ def admin_login():
         if username == 'admin' and password == os.getenv("ADMIN_PASSWORD"):
             session['admin'] = True
             return redirect(url_for('admin_events'))
-        return "Invalid credentials", 403
+        return render_template('admin_login.html', error="Invalid credentials."), 403
     return render_template('admin_login.html')
 
 
