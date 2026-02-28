@@ -4,16 +4,25 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{% block title %}Taps & Takeout{% endblock %}</title>
-  <link href="https://fonts.googleapis.com/css2?family=Prata&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Prata&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/static/style.css" />
 </head>
 <body>
-  <header class="splash-screen">
+  <header class="site-header">
     <a href="/">
       <img src="/static/images/logo.png" alt="Taps & Takeout logo" class="logo" />
     </a>
+    <nav>
+      <a href="/menu">Menu</a>
+      <a href="/events">Events</a>
+      <a href="/contact">Contact</a>
+    </nav>
   </header>
 
   {% block content %}{% endblock %}
+
+  <footer class="site-footer">
+    <p>Please don't review us on Yelp.</p>
+  </footer>
 </body>
 </html>
