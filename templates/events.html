@@ -8,7 +8,7 @@
     <h1 class="page-title">Events Calendar</h1>
     {% if events %}
     <ul>
-      {% for event in events|sort(attribute='date') if event.date >= yesterday %} 
+      {% for event in events %}
         <li>
           <strong>{{ event.title }}</strong>
           <time datetime="{{ event.date.isoformat() }}">{{ event.date.strftime("%b %e, %Y") }}</time>
