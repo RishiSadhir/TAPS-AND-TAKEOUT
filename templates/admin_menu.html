@@ -11,10 +11,14 @@
   {% endif %}
 
   <!-- Add New Section -->
-  <form method="post" class="admin-form">
+  <form method="post" class="admin-form admin-card admin-create-card">
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
     <input type="hidden" name="action" value="add_section">
-    <input name="section_name" placeholder="New Section Name" value="{{ section_form_data.get('section_name', '') }}" required>
+    <div class="admin-card-header">
+      <h2>Add Section</h2>
+      <span class="admin-card-meta">Menu grouping</span>
+    </div>
+    <input name="section_name" placeholder="New Section Name" value="{{ section_form_data.get('section_name', '') }}" maxlength="60" required>
     {% if section_form_errors.get('section_name') %}<p class="form-error" role="alert">{{ section_form_errors['section_name'] }}</p>{% endif %}
     <button type="submit">Add Section</button>
   </form>
@@ -23,43 +27,58 @@
 
   {% for section in menu %}
     {% set si = loop.index0 %}
-    <h2>{{ section.section }}</h2>
-    <form method="post" style="display: inline;">
-      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-      <input type="hidden" name="action" value="delete_section">
-      <input type="hidden" name="section_index" value="{{ si }}">
-      <button type="submit" onclick="return confirm('Delete section &quot;{{ section.section }}&quot; and all its items?')">Delete Section</button>
-    </form>
+    <section class="admin-section-card">
+      <div class="admin-card-header">
+        <h2>{{ section.section }}</h2>
+        <form method="post" class="admin-inline-form">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <input type="hidden" name="action" value="delete_section">
+          <input type="hidden" name="section_index" value="{{ si }}">
+          <button type="submit" onclick="return confirm('Delete section &quot;{{ section.section }}&quot; and all its items?')">Delete Section</button>
+        </form>
+      </div>
 
-    {% for item in section['items'] %}
-      {% set key = si ~ ':' ~ loop.index0 %}
-      {% set row_data = item_form_data.get(key, {}) %}
-      {% set row_errors = item_form_errors.get(key, {}) %}
-      <form method="post" class="admin-form admin-row-form">
+      {% for item in section['items'] %}
+        {% set key = si ~ ':' ~ loop.index0 %}
+        {% set row_data = item_form_data.get(key, {}) %}
+        {% set row_errors = item_form_errors.get(key, {}) %}
+        <form method="post" class="admin-form admin-row-form admin-card">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <input type="hidden" name="section_index" value="{{ si }}">
+          <input type="hidden" name="item_index" value="{{ loop.index0 }}">
+          <div class="admin-card-header">
+            <h3>{{ row_data.get('item_name', item.name) or 'Untitled item' }}</h3>
+            <span class="admin-card-meta">{{ section.section }}</span>
+          </div>
+          <input name="item_name" value="{{ row_data.get('item_name', item.name) }}" maxlength="80" required><br>
+          {% if row_errors.get('item_name') %}<p class="form-error" role="alert">{{ row_errors['item_name'] }}</p>{% endif %}
+          <textarea name="item_description" maxlength="400">{{ row_data.get('item_description', item.description) }}</textarea><br>
+          {% if row_errors.get('item_description') %}<p class="form-error" role="alert">{{ row_errors['item_description'] }}</p>{% endif %}
+          <div class="admin-actions">
+            <button type="submit" name="action" value="update_item">Update</button>
+            <button type="submit" name="action" value="delete_item" onclick="return confirm('Delete &quot;{{ item.name }}&quot;?')">Delete</button>
+          </div>
+        </form>
+      {% endfor %}
+
+      <!-- Add Item to This Section -->
+      {% set add_item_data = item_form_data.get(si, {}) %}
+      {% set add_item_errors = item_form_errors.get(si, {}) %}
+      <form method="post" class="admin-form add-item-form admin-card admin-create-card">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <input type="hidden" name="action" value="add_item">
         <input type="hidden" name="section_index" value="{{ si }}">
-        <input type="hidden" name="item_index" value="{{ loop.index0 }}">
-        <input name="item_name" value="{{ row_data.get('item_name', item.name) }}" required><br>
-        {% if row_errors.get('item_name') %}<p class="form-error" role="alert">{{ row_errors['item_name'] }}</p>{% endif %}
-        <textarea name="item_description">{{ row_data.get('item_description', item.description) }}</textarea><br>
-        <button type="submit" name="action" value="update_item">Update</button>
-        <button type="submit" name="action" value="delete_item" onclick="return confirm('Delete &quot;{{ item.name }}&quot;?')">Delete</button>
+        <div class="admin-card-header">
+          <h3>Add Item</h3>
+          <span class="admin-card-meta">{{ section.section }}</span>
+        </div>
+        <input name="item_name" placeholder="Item Name" value="{{ add_item_data.get('item_name', '') }}" maxlength="80" required><br>
+        {% if add_item_errors.get('item_name') %}<p class="form-error" role="alert">{{ add_item_errors['item_name'] }}</p>{% endif %}
+        <textarea name="item_description" placeholder="Description" maxlength="400">{{ add_item_data.get('item_description', '') }}</textarea><br>
+        {% if add_item_errors.get('item_description') %}<p class="form-error" role="alert">{{ add_item_errors['item_description'] }}</p>{% endif %}
+        <button type="submit">Add Item</button>
       </form>
-    {% endfor %}
 
-    <!-- Add Item to This Section -->
-    {% set add_item_data = item_form_data.get(si, {}) %}
-    {% set add_item_errors = item_form_errors.get(si, {}) %}
-    <form method="post" class="admin-form add-item-form">
-      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-      <input type="hidden" name="action" value="add_item">
-      <input type="hidden" name="section_index" value="{{ si }}">
-      <input name="item_name" placeholder="Item Name" value="{{ add_item_data.get('item_name', '') }}" required><br>
-      {% if add_item_errors.get('item_name') %}<p class="form-error" role="alert">{{ add_item_errors['item_name'] }}</p>{% endif %}
-      <textarea name="item_description" placeholder="Description">{{ add_item_data.get('item_description', '') }}</textarea><br>
-      <button type="submit">Add Item</button>
-    </form>
-
-    <hr>
+    </section>
   {% endfor %}
 {% endblock %}

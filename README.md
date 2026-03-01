@@ -17,11 +17,21 @@ A minimal Flask website for a neighborhood pub. Intentionally simple and borderl
 ## Structure
 
 ```
-app.py              # Flask routes and request handling
-events.py           # load_events() / save_events() — reads/writes data/events.json
-menu_data.py        # load_menu() / save_menu() — reads/writes data/menu.json
-tests.py            # pytest suite (45 tests)
-tests_e2e.py        # Playwright smoke test for real browser admin flows
+app.py              # Thin entrypoint that creates the Flask app
+events.py           # JSON event persistence helpers
+menu_data.py        # JSON menu persistence helpers
+tests.py            # pytest suite (50 tests)
+tests_e2e.py        # Playwright smoke tests for real browser admin flows
+requirements-dev.txt
+
+taps_and_takeout/
+  app_factory.py    # Flask app creation and extension wiring
+  storage.py        # content-store abstraction over JSON data
+  validation.py     # sanitization and field length limits
+  logging_utils.py  # structured admin/validation logging
+  routes/
+    public.py       # public pages + /healthz
+    admin.py        # admin login and CRUD routes
 
 data/
   menu.json         # Menu sections and items (committed; seeded from original hardcoded menu)
@@ -73,6 +83,15 @@ python -m playwright install chromium
 pytest tests_e2e.py -v
 ```
 
+CI:
+
+- GitHub Actions runs both suites on pushes to `main` and on pull requests.
+
 ## Deployment
 
 Hosted on Render (free tier, auto-deploys from `main`). Set both `FLASK_SECRET_KEY` and `ADMIN_PASSWORD` in the Render environment before deploy. The app also respects Render's `PORT` environment variable at runtime. Data resets on redeploy — events are expected to be re-entered, menu is seeded from `data/menu.json` in the repo.
+
+## Operations
+
+- Health check: `/healthz`
+- Admin inputs are sanitized server-side and capped before writing to disk.

@@ -8,15 +8,20 @@
   {% endif %}
 
   <!-- Add New Event -->
-  <form method="post" class="admin-form">
+  <form method="post" class="admin-form admin-card admin-create-card">
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
     <input type="hidden" name="action" value="add">
-    <input name="title" placeholder="Event Title" value="{{ form_data.get('title', '') }}" required><br>
+    <div class="admin-card-header">
+      <h2>Add Event</h2>
+      <span class="admin-card-meta">One-off or recurring</span>
+    </div>
+    <input name="title" placeholder="Event Title" value="{{ form_data.get('title', '') }}" maxlength="80" required><br>
     {% if form_errors.get('title') %}<p class="form-error" role="alert">{{ form_errors['title'] }}</p>{% endif %}
     <input type="date" name="date" value="{{ form_data.get('date', '') }}"><br>
     {% if form_errors.get('date') %}<p class="form-error" role="alert">{{ form_errors['date'] }}</p>{% endif %}
-    <textarea name="description" placeholder="Description">{{ form_data.get('description', '') }}</textarea><br>
-    <label><input type="checkbox" name="pinned" value="1" {% if form_data.get('pinned') %}checked{% endif %}> Recurring (won't expire)</label><br>
+    {% if form_errors.get('description') %}<p class="form-error" role="alert">{{ form_errors['description'] }}</p>{% endif %}
+    <textarea name="description" placeholder="Description" maxlength="400">{{ form_data.get('description', '') }}</textarea><br>
+    <label class="admin-checkbox"><input type="checkbox" name="pinned" value="1" {% if form_data.get('pinned') %}checked{% endif %}> Recurring (won't expire)</label><br>
     <button type="submit">Add Event</button>
   </form>
 
@@ -31,17 +36,28 @@
   {% for event in events %}
     {% set row_data = row_form_data.get(loop.index0, {}) %}
     {% set errors = row_errors.get(loop.index0, {}) %}
-    <form method="post" class="admin-form admin-row-form">
+    <form method="post" class="admin-form admin-row-form admin-card {% if row_data.get('pinned', event.get('pinned')) %}admin-card-pinned{% endif %}">
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
       <input type="hidden" name="index" value="{{ loop.index0 }}">
-      <input name="title" value="{{ row_data.get('title', event.title) }}">
+      <div class="admin-card-header">
+        <h3>{{ row_data.get('title', event.title) or 'Untitled event' }}</h3>
+        {% if row_data.get('pinned', event.get('pinned')) %}
+          <span class="admin-badge">Pinned</span>
+        {% else %}
+          <span class="admin-card-meta">{{ row_data.get('date', event.date) }}</span>
+        {% endif %}
+      </div>
+      <input name="title" value="{{ row_data.get('title', event.title) }}" maxlength="80">
       {% if errors.get('title') %}<p class="form-error" role="alert">{{ errors['title'] }}</p>{% endif %}
       <input type="date" name="date" value="{{ row_data.get('date', event.date if not event.get('pinned') else '') }}"><br>
       {% if errors.get('date') %}<p class="form-error" role="alert">{{ errors['date'] }}</p>{% endif %}
-      <textarea name="description">{{ row_data.get('description', event.description) }}</textarea><br>
-      <label><input type="checkbox" name="pinned" value="1" {% if row_data.get('pinned', event.get('pinned')) %}checked{% endif %}> Recurring (won't expire)</label><br>
-      <button type="submit" name="action" value="update">Update</button>
-      <button type="submit" name="action" value="delete" onclick="return confirm('Delete this event?')">Delete</button>
+      {% if errors.get('description') %}<p class="form-error" role="alert">{{ errors['description'] }}</p>{% endif %}
+      <textarea name="description" maxlength="400">{{ row_data.get('description', event.description) }}</textarea><br>
+      <label class="admin-checkbox"><input type="checkbox" name="pinned" value="1" {% if row_data.get('pinned', event.get('pinned')) %}checked{% endif %}> Recurring (won't expire)</label><br>
+      <div class="admin-actions">
+        <button type="submit" name="action" value="update">Update</button>
+        <button type="submit" name="action" value="delete" onclick="return confirm('Delete this event?')">Delete</button>
+      </div>
     </form>
   {% endfor %}
 {% endblock %}

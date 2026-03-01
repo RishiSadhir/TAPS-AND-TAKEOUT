@@ -109,6 +109,15 @@ def test_contact_page(client):
     assert client.get("/contact").status_code == 200
 
 
+def test_healthz(client):
+    response = client.get("/healthz")
+    assert response.status_code == 200
+    payload = response.get_json()
+    assert payload["status"] == "ok"
+    assert "events_count" in payload
+    assert "menu_sections" in payload
+
+
 # ---------------------------------------------------------------------------
 # Event filtering tests
 # ---------------------------------------------------------------------------
@@ -212,6 +221,24 @@ def test_add_event_invalid_date(client):
         "action": "add", "title": "X", "date": "not-a-date", "description": "",
     })
     assert r.status_code == 400
+
+
+def test_add_event_title_length_limit(client):
+    login(client)
+    r = client.post("/admin-events", data={
+        "action": "add", "title": "X" * 81, "date": "2026-06-01", "description": "",
+    })
+    assert r.status_code == 400
+    assert "80 characters or fewer" in r.data.decode()
+
+
+def test_add_event_description_length_limit(client):
+    login(client)
+    r = client.post("/admin-events", data={
+        "action": "add", "title": "X", "date": "2026-06-01", "description": "Y" * 401,
+    })
+    assert r.status_code == 400
+    assert "400 characters or fewer" in r.data.decode()
 
 
 def test_update_event(client):
@@ -381,6 +408,26 @@ def test_add_item_empty_name(client):
         "item_name": "  ", "item_description": "",
     })
     assert r.status_code == 400
+
+
+def test_add_section_length_limit(client):
+    login(client)
+    r = client.post("/admin-menu", data={
+        "action": "add_section", "section_name": "S" * 61,
+    })
+    assert r.status_code == 400
+    assert "60 characters or fewer" in r.data.decode()
+
+
+def test_add_item_description_length_limit(client):
+    menu_module.save_menu([{"section": "Drinks", "items": []}])
+    login(client)
+    r = client.post("/admin-menu", data={
+        "action": "add_item", "section_index": "0",
+        "item_name": "Lager", "item_description": "D" * 401,
+    })
+    assert r.status_code == 400
+    assert "400 characters or fewer" in r.data.decode()
 
 
 def test_update_item(client):

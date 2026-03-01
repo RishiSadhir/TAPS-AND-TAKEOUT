@@ -3,9 +3,9 @@
 {% block content %}
   <main class="page-content">
     <nav class="admin-nav">
-      <a href="{{ url_for('admin_events') }}" {% if request.endpoint == 'admin_events' %}class="active"{% endif %}>Events</a>
-      <a href="{{ url_for('admin_menu') }}" {% if request.endpoint == 'admin_menu' %}class="active"{% endif %}>Menu</a>
-      <a href="{{ url_for('logout') }}" class="admin-nav-logout">Logout</a>
+      <a href="{{ url_for('admin.admin_events') }}" {% if request.endpoint == 'admin.admin_events' %}class="active"{% endif %}>Events</a>
+      <a href="{{ url_for('admin.admin_menu') }}" {% if request.endpoint == 'admin.admin_menu' %}class="active"{% endif %}>Menu</a>
+      <a href="{{ url_for('admin.logout') }}" class="admin-nav-logout">Logout</a>
     </nav>
     {% block admin_content %}{% endblock %}
   </main>

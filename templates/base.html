@@ -13,9 +13,9 @@
       <img src="/static/images/logo.png" alt="Taps & Takeout logo" class="logo" />
     </a>
     <nav>
-      <a href="/menu" {% if request.endpoint == 'menu' %}class="active"{% endif %}>Menu</a>
-      <a href="/events" {% if request.endpoint == 'events' %}class="active"{% endif %}>Events</a>
-      <a href="/contact" {% if request.endpoint == 'contact' %}class="active"{% endif %}>Contact</a>
+      <a href="/menu" {% if request.endpoint == 'public.menu' %}class="active"{% endif %}>Menu</a>
+      <a href="/events" {% if request.endpoint == 'public.events' %}class="active"{% endif %}>Events</a>
+      <a href="/contact" {% if request.endpoint == 'public.contact' %}class="active"{% endif %}>Contact</a>
     </nav>
   </header>
 
@@ -37,28 +37,28 @@
   <script>
     (function () {
       var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (reduceMotion) return;
-
       var pageContent = document.querySelector('.page-content');
-      if (pageContent) {
+      if (pageContent && !reduceMotion) {
         requestAnimationFrame(function () {
           pageContent.classList.add('is-visible');
         });
       }
 
-      document.querySelectorAll('a[href]').forEach(function (link) {
-        var href = link.getAttribute('href');
-        if (!href || href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('tel:')) return;
-        if (link.target && link.target !== '_self') return;
+      if (!reduceMotion) {
+        document.querySelectorAll('a[href]').forEach(function (link) {
+          var href = link.getAttribute('href');
+          if (!href || href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('tel:')) return;
+          if (link.target && link.target !== '_self') return;
 
-        link.addEventListener('click', function (event) {
-          if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-          if (link.origin !== window.location.origin) return;
-          if (link.pathname === window.location.pathname && link.search === window.location.search) return;
+          link.addEventListener('click', function (event) {
+            if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+            if (link.origin !== window.location.origin) return;
+            if (link.pathname === window.location.pathname && link.search === window.location.search) return;
 
-          document.body.classList.add('is-leaving');
+            document.body.classList.add('is-leaving');
+          });
         });
-      });
+      }
 
       document.querySelectorAll('form').forEach(function (form) {
         form.addEventListener('submit', function (event) {
@@ -70,6 +70,22 @@
           });
         });
       });
+
+      document.querySelectorAll('.flash-message').forEach(function (message) {
+        window.setTimeout(function () {
+          message.classList.add('is-dismissing');
+          window.setTimeout(function () {
+            message.remove();
+          }, reduceMotion ? 0 : 220);
+        }, 3200);
+      });
+
+      var firstError = document.querySelector('.form-error[role="alert"]');
+      if (firstError) {
+        window.requestAnimationFrame(function () {
+          firstError.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'center' });
+        });
+      }
     }());
   </script>
 </body>
