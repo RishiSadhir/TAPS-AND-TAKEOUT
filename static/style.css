@@ -1,9 +1,11 @@
 :root {
   --cream:          #ece7dc;
   --dark-bg:        #0d0b09;
+  --dark-panel:     #15110d;
   --amber:          #c4a27a;
   --amber-muted:    #8a6e4f;
   --amber-dim:      rgba(196, 162, 122, 0.45);
+  --amber-line:     rgba(196, 162, 122, 0.22);
   --rust:           #902F15;
   --logo-max-width: 320px;
   --spacing:        1.5rem;
@@ -48,8 +50,8 @@ nav {
 
 nav a {
   font-family: var(--font-body);
-  font-size: 0.95rem;
-  letter-spacing: 0.12em;
+  font-size: 0.88rem;
+  letter-spacing: 0.17em;
   text-transform: uppercase;
   text-decoration: none;
   color: var(--rust);
@@ -118,13 +120,14 @@ h3 {
 
 .page-title {
   font-size: 2rem;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.1em;
   margin-top: 0;
-  margin-bottom: calc(var(--spacing) * 0.5);
+  margin-bottom: calc(var(--spacing) * 0.75);
   text-align: center;
-  border-bottom: 1px solid var(--amber-dim);
+  border-bottom: 1px solid var(--amber-line);
   padding-bottom: calc(var(--spacing) * 0.5);
   width: 100%;
+  text-transform: uppercase;
 }
 
 /* ── Home page ── */
@@ -156,14 +159,16 @@ h3 {
 }
 
 .page-content section + section {
-  border-top: 1px solid var(--amber-dim);
+  border-top: 1px solid var(--amber-line);
   padding-top: var(--spacing);
 }
 
 .page-content h2 {
   margin-top: calc(var(--spacing) * 1.25);
-  margin-bottom: calc(var(--spacing) * 0.25);
-  font-size: 1.5rem;
+  margin-bottom: calc(var(--spacing) * 0.4);
+  font-size: 1.3rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
 }
 
 .page-content ul {
@@ -178,7 +183,7 @@ h3 {
 
 .page-content p {
   color: var(--amber);
-  margin: 0.4rem 0 0.8rem;
+  margin: 0.3rem 0 0.7rem;
 }
 
 .empty-state {
@@ -201,8 +206,8 @@ h3 {
 }
 
 .events-page li {
-  padding: 0.85rem 0;
-  border-bottom: 1px solid var(--amber-dim);
+  padding: 0.95rem 0;
+  border-bottom: 1px solid var(--amber-line);
 }
 
 .events-page li:last-child {
@@ -211,9 +216,10 @@ h3 {
 
 .events-page strong {
   font-family: var(--font-display);
-  font-size: 1.1rem;
+  font-size: 1rem;
   color: var(--amber);
   display: block;
+  letter-spacing: 0.05em;
 }
 
 .events-page time {
@@ -243,7 +249,7 @@ h3 {
 .contact-content a {
   color: var(--amber);
   text-decoration: none;
-  border-bottom: 1px solid var(--amber-dim);
+  border-bottom: 1px solid var(--amber-line);
 }
 
 .contact-content a:hover {
@@ -254,12 +260,13 @@ h3 {
 .site-footer {
   text-align: center;
   padding: calc(var(--spacing) * 1.5) var(--spacing);
-  border-top: 1px solid var(--amber-dim);
+  border-top: 1px solid var(--amber-line);
   font-family: var(--font-body);
   font-style: italic;
   font-size: 0.85rem;
   color: var(--amber-muted);
 }
+
 
 .site-footer p {
   margin: 0;
