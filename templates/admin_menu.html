@@ -3,11 +3,19 @@
 {% block admin_content %}
   <h1 class="page-title">Menu</h1>
 
+  {% if section_form_errors.get('global') %}
+    <p class="form-error" role="alert">{{ section_form_errors['global'] }}</p>
+  {% endif %}
+  {% if item_form_errors.get('global') %}
+    <p class="form-error" role="alert">{{ item_form_errors['global'] }}</p>
+  {% endif %}
+
   <!-- Add New Section -->
-  <form method="post">
+  <form method="post" class="admin-form">
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
     <input type="hidden" name="action" value="add_section">
-    <input name="section_name" placeholder="New Section Name" required>
+    <input name="section_name" placeholder="New Section Name" value="{{ section_form_data.get('section_name', '') }}" required>
+    {% if section_form_errors.get('section_name') %}<p class="form-error" role="alert">{{ section_form_errors['section_name'] }}</p>{% endif %}
     <button type="submit">Add Section</button>
   </form>
 
@@ -24,24 +32,31 @@
     </form>
 
     {% for item in section['items'] %}
-      <form method="post" style="margin: 0.75rem 0;">
+      {% set key = si ~ ':' ~ loop.index0 %}
+      {% set row_data = item_form_data.get(key, {}) %}
+      {% set row_errors = item_form_errors.get(key, {}) %}
+      <form method="post" class="admin-form admin-row-form">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <input type="hidden" name="section_index" value="{{ si }}">
         <input type="hidden" name="item_index" value="{{ loop.index0 }}">
-        <input name="item_name" value="{{ item.name }}" required><br>
-        <textarea name="item_description">{{ item.description }}</textarea><br>
+        <input name="item_name" value="{{ row_data.get('item_name', item.name) }}" required><br>
+        {% if row_errors.get('item_name') %}<p class="form-error" role="alert">{{ row_errors['item_name'] }}</p>{% endif %}
+        <textarea name="item_description">{{ row_data.get('item_description', item.description) }}</textarea><br>
         <button type="submit" name="action" value="update_item">Update</button>
         <button type="submit" name="action" value="delete_item" onclick="return confirm('Delete &quot;{{ item.name }}&quot;?')">Delete</button>
       </form>
     {% endfor %}
 
     <!-- Add Item to This Section -->
-    <form method="post" style="margin-top: 0.5rem;">
+    {% set add_item_data = item_form_data.get(si, {}) %}
+    {% set add_item_errors = item_form_errors.get(si, {}) %}
+    <form method="post" class="admin-form add-item-form">
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
       <input type="hidden" name="action" value="add_item">
       <input type="hidden" name="section_index" value="{{ si }}">
-      <input name="item_name" placeholder="Item Name" required><br>
-      <textarea name="item_description" placeholder="Description"></textarea><br>
+      <input name="item_name" placeholder="Item Name" value="{{ add_item_data.get('item_name', '') }}" required><br>
+      {% if add_item_errors.get('item_name') %}<p class="form-error" role="alert">{{ add_item_errors['item_name'] }}</p>{% endif %}
+      <textarea name="item_description" placeholder="Description">{{ add_item_data.get('item_description', '') }}</textarea><br>
       <button type="submit">Add Item</button>
     </form>
 

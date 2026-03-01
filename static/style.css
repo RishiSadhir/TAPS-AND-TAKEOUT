@@ -62,6 +62,10 @@ nav a:hover {
   border-color: var(--rust);
 }
 
+nav a.active {
+  border-color: var(--rust);
+}
+
 /* ── Body: dark zone ── */
 body {
   background: var(--dark-bg);
@@ -80,6 +84,19 @@ body {
   flex-direction: column;
   align-items: center;
   text-align: center;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 160ms ease, transform 160ms ease;
+}
+
+.page-content.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+body.is-leaving .page-content {
+  opacity: 0;
+  transform: translateY(4px);
 }
 
 /* ── Headings ── */
@@ -162,6 +179,11 @@ h3 {
 .page-content p {
   color: var(--amber);
   margin: 0.4rem 0 0.8rem;
+}
+
+.empty-state {
+  color: var(--amber-muted);
+  font-style: italic;
 }
 
 /* ── Left-align variant ── */
@@ -294,6 +316,25 @@ a {
   color: var(--amber);
 }
 
+.flash-stack {
+  max-width: 680px;
+  margin: 1rem auto 0;
+  padding: 0 var(--spacing);
+}
+
+.flash-message {
+  border: 1px solid var(--amber-dim);
+  background: rgba(26, 22, 18, 0.92);
+  color: var(--amber);
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.75rem;
+  text-align: center;
+}
+
+.flash-success {
+  border-color: rgba(196, 162, 122, 0.7);
+}
+
 /* ── Admin nav bar ── */
 .admin-nav {
   display: flex;
@@ -318,13 +359,55 @@ a {
 
 .admin-nav a:hover {
   color: var(--amber);
+  border-color: var(--amber);
 }
 
 .admin-nav a.active {
   color: var(--amber);
-  border-bottom-color: var(--amber);
+  border-color: var(--amber);
 }
 
 .admin-nav-logout {
   margin-left: auto;
+}
+
+.admin-form {
+  width: 100%;
+}
+
+.admin-row-form,
+.add-item-form {
+  margin: 0.75rem 0;
+}
+
+.admin-form input,
+.admin-form textarea {
+  width: 100%;
+  margin-bottom: 0.5rem;
+}
+
+.admin-form button + button {
+  margin-left: 0.5rem;
+}
+
+.form-error {
+  width: 100%;
+  margin: -0.1rem 0 0.6rem;
+  color: #e4a890;
+  font-size: 0.95rem;
+}
+
+form.is-submitting button,
+form.is-submitting input[type="submit"] {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-content,
+  body.is-leaving .page-content {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 }

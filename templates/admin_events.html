@@ -3,14 +3,20 @@
 {% block admin_content %}
   <h1 class="page-title">Events</h1>
 
+  {% if row_errors.get('global') %}
+    <p class="form-error" role="alert">{{ row_errors['global'] }}</p>
+  {% endif %}
+
   <!-- Add New Event -->
-  <form method="post">
+  <form method="post" class="admin-form">
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
     <input type="hidden" name="action" value="add">
-    <input name="title" placeholder="Event Title" required><br>
-    <input type="date" name="date"><br>
-    <textarea name="description" placeholder="Description"></textarea><br>
-    <label><input type="checkbox" name="pinned" value="1"> Recurring (won't expire)</label><br>
+    <input name="title" placeholder="Event Title" value="{{ form_data.get('title', '') }}" required><br>
+    {% if form_errors.get('title') %}<p class="form-error" role="alert">{{ form_errors['title'] }}</p>{% endif %}
+    <input type="date" name="date" value="{{ form_data.get('date', '') }}"><br>
+    {% if form_errors.get('date') %}<p class="form-error" role="alert">{{ form_errors['date'] }}</p>{% endif %}
+    <textarea name="description" placeholder="Description">{{ form_data.get('description', '') }}</textarea><br>
+    <label><input type="checkbox" name="pinned" value="1" {% if form_data.get('pinned') %}checked{% endif %}> Recurring (won't expire)</label><br>
     <button type="submit">Add Event</button>
   </form>
 
@@ -23,13 +29,17 @@
     <button type="submit" onclick="return confirm('Remove all past events?')">Clear Past Events</button>
   </form>
   {% for event in events %}
-    <form method="post" style="margin-bottom: 1rem;">
+    {% set row_data = row_form_data.get(loop.index0, {}) %}
+    {% set errors = row_errors.get(loop.index0, {}) %}
+    <form method="post" class="admin-form admin-row-form">
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
       <input type="hidden" name="index" value="{{ loop.index0 }}">
-      <input name="title" value="{{ event.title }}">
-      <input type="date" name="date" value="{{ event.date if not event.get('pinned') else '' }}"><br>
-      <textarea name="description">{{ event.description }}</textarea><br>
-      <label><input type="checkbox" name="pinned" value="1" {% if event.get('pinned') %}checked{% endif %}> Recurring (won't expire)</label><br>
+      <input name="title" value="{{ row_data.get('title', event.title) }}">
+      {% if errors.get('title') %}<p class="form-error" role="alert">{{ errors['title'] }}</p>{% endif %}
+      <input type="date" name="date" value="{{ row_data.get('date', event.date if not event.get('pinned') else '') }}"><br>
+      {% if errors.get('date') %}<p class="form-error" role="alert">{{ errors['date'] }}</p>{% endif %}
+      <textarea name="description">{{ row_data.get('description', event.description) }}</textarea><br>
+      <label><input type="checkbox" name="pinned" value="1" {% if row_data.get('pinned', event.get('pinned')) %}checked{% endif %}> Recurring (won't expire)</label><br>
       <button type="submit" name="action" value="update">Update</button>
       <button type="submit" name="action" value="delete" onclick="return confirm('Delete this event?')">Delete</button>
     </form>

@@ -21,6 +21,7 @@ app.py              # Flask routes and request handling
 events.py           # load_events() / save_events() — reads/writes data/events.json
 menu_data.py        # load_menu() / save_menu() — reads/writes data/menu.json
 tests.py            # pytest suite (45 tests)
+tests_e2e.py        # Playwright smoke test for real browser admin flows
 
 data/
   menu.json         # Menu sections and items (committed; seeded from original hardcoded menu)
@@ -62,6 +63,14 @@ flask run --port 5001   # port 5000 blocked by macOS AirPlay
 
 ```bash
 pytest tests.py -v
+```
+
+Browser smoke test:
+
+```bash
+pip install -r requirements-dev.txt
+python -m playwright install chromium
+pytest tests_e2e.py -v
 ```
 
 ## Deployment

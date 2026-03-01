@@ -251,7 +251,8 @@ def test_delete_event(client):
         "action": "delete", "index": "0",
         "title": "Gone", "date": "2026-06-01", "description": "",
     }, follow_redirects=True)
-    assert "Gone" not in r.data.decode()
+    assert events_module.load_events() == []
+    assert "Current Events" in r.data.decode()
 
 
 def test_delete_event_out_of_bounds(client):
@@ -342,7 +343,8 @@ def test_delete_section(client):
     r = client.post("/admin-menu", data={
         "action": "delete_section", "section_index": "0",
     }, follow_redirects=True)
-    assert "Temporary" not in r.data.decode()
+    assert menu_module.load_menu() == []
+    assert "Deleted section" in r.data.decode()
 
 
 def test_delete_section_out_of_bounds(client):
@@ -419,7 +421,8 @@ def test_delete_item(client):
     r = client.post("/admin-menu", data={
         "action": "delete_item", "section_index": "0", "item_index": "0",
     }, follow_redirects=True)
-    assert "Gone" not in r.data.decode()
+    assert menu_module.load_menu() == [{"section": "S", "items": []}]
+    assert "Deleted item" in r.data.decode()
 
 
 def test_delete_item_out_of_bounds(client):

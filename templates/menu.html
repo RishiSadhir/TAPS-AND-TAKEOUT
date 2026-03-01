@@ -4,16 +4,20 @@
 
 {% block content %}
   <main class="page-content">
-
-    {% for section in menu %}
-    <section>
-      <h2>{{ section.section }}</h2>
-      {% for item in section['items'] %}
-        <h3>{{ item.name }}</h3>
-        <p style="white-space: pre-line">{{ item.description }}</p>
+    <h1 class="page-title">Menu</h1>
+    {% if menu %}
+      {% for section in menu %}
+      <section>
+        <h2>{{ section.section }}</h2>
+        {% for item in section['items'] %}
+          <h3>{{ item.name }}</h3>
+          <p style="white-space: pre-line">{{ item.description }}</p>
+        {% endfor %}
+      </section>
       {% endfor %}
-    </section>
-    {% endfor %}
+    {% else %}
+      <p class="empty-state">The kitchen is keeping its secrets for now. Ask your server.</p>
+    {% endif %}
 
   </main>
 {% endblock %}

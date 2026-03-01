@@ -44,6 +44,7 @@ Both variables are required. The app now fails fast at startup if either one is 
 - **`templates/`** — Jinja2 templates; admin pages extend `admin_base.html` which extends `base.html`
 - **`static/`** — single `style.css` + `images/` directory
 - **`tests.py`** — pytest suite (currently 45 tests); run with `pytest tests.py -v`
+- **`tests_e2e.py`** — Playwright smoke test for real browser admin event flows; run with `pytest tests_e2e.py -v` after `pip install -r requirements-dev.txt` and `python -m playwright install chromium`
 
 ## Key Behaviors
 

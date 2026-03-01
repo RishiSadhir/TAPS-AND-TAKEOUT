@@ -13,16 +13,64 @@
       <img src="/static/images/logo.png" alt="Taps & Takeout logo" class="logo" />
     </a>
     <nav>
-      <a href="/menu">Menu</a>
-      <a href="/events">Events</a>
-      <a href="/contact">Contact</a>
+      <a href="/menu" {% if request.endpoint == 'menu' %}class="active"{% endif %}>Menu</a>
+      <a href="/events" {% if request.endpoint == 'events' %}class="active"{% endif %}>Events</a>
+      <a href="/contact" {% if request.endpoint == 'contact' %}class="active"{% endif %}>Contact</a>
     </nav>
   </header>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <section class="flash-stack" aria-live="polite">
+        {% for category, message in messages %}
+          <div class="flash-message flash-{{ category }}">{{ message }}</div>
+        {% endfor %}
+      </section>
+    {% endif %}
+  {% endwith %}
 
   {% block content %}{% endblock %}
 
   <footer class="site-footer">
     <p>Please don't review us on Yelp.</p>
   </footer>
+  <script>
+    (function () {
+      var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduceMotion) return;
+
+      var pageContent = document.querySelector('.page-content');
+      if (pageContent) {
+        requestAnimationFrame(function () {
+          pageContent.classList.add('is-visible');
+        });
+      }
+
+      document.querySelectorAll('a[href]').forEach(function (link) {
+        var href = link.getAttribute('href');
+        if (!href || href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('tel:')) return;
+        if (link.target && link.target !== '_self') return;
+
+        link.addEventListener('click', function (event) {
+          if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+          if (link.origin !== window.location.origin) return;
+          if (link.pathname === window.location.pathname && link.search === window.location.search) return;
+
+          document.body.classList.add('is-leaving');
+        });
+      });
+
+      document.querySelectorAll('form').forEach(function (form) {
+        form.addEventListener('submit', function (event) {
+          form.classList.add('is-submitting');
+          var submitter = event.submitter || null;
+          form.querySelectorAll('button[type="submit"], button:not([type]), input[type="submit"]').forEach(function (button) {
+            if (submitter && button === submitter) return;
+            button.disabled = true;
+          });
+        });
+      });
+    }());
+  </script>
 </body>
 </html>
